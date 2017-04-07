@@ -48,16 +48,6 @@ public class Client {
 		
 		return true;
 	}
-	
-	/**
-	 * TODO: 
-	 * 	1) Hash para comparar entre archivo origen y destino - CHECK
-	 * 	2) Unir los segmentos de forma ordenada por si llegan en desorden CHECK
-	 *  3) Agregar timer para cancelar si se pierden paquetes.
-	 *  4) Interfaz grafica del cliente para seleccionar archivos y configurar el valor de la IP, puerto y buffer
-	 * @param string 
-	 */
-	
 
 	public boolean createConnection(String pSourceFilePath) {
 		

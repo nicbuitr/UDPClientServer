@@ -20,7 +20,7 @@ public class Server {
 	private FileEvent fileEvent = null;
 
 	private int port = 9876;
-	private int bufferSize = 32000;
+	private int bufferSize = 32000; // Min = 576 bytes, theoretical Max 64000 bytes 
 	
 	//File where the segments will be appended to
 	private byte[] incomingFile;
