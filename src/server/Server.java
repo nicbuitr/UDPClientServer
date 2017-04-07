@@ -145,6 +145,10 @@ public class Server {
 				
 				byte[] serverFileHash = md.digest();
 				
+				System.out.println("SERVER: Received Last Segment, # of Packets Missing: " + (numberOfPacketsExpected - numberOfPacketsReceived));
+				System.out.println("Hash Client: " + Arrays.toString(originFileHash));
+				System.out.println("Hash Server: " + Arrays.toString(serverFileHash));
+				
 				System.out.println("Hash Client == Hash Server? " + Arrays.equals(originFileHash, serverFileHash));				
 			
 				System.out.println("Output file : " + outputFile + " is successfully saved ");
