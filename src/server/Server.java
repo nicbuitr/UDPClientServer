@@ -84,48 +84,48 @@ public class Server {
 	}
 
 	public void createAndWriteFile() {
-		String outputFile = fileEvent.getDestinationDirectory() + fileEvent.getFilename();
-		if (!new File(fileEvent.getDestinationDirectory()).exists()) {
-			new File(fileEvent.getDestinationDirectory()).mkdirs();
-		}
-		
-		boolean foundIncompleteFile = false;
-		while (new File(outputFile).exists() && !foundIncompleteFile) {
-			int fileCopyNumber = 1;
-			//If the file is already complete then add next sequential to name
-			if (new File(outputFile).length() == fileEvent.getTotalFileSize()){
-				String fileName = outputFile;
-				String nameLeft = fileName.split("\\.")[0];
-				try {
-					int previousNumber = Integer.parseInt(nameLeft.substring(nameLeft.length()-1));
-					fileCopyNumber += previousNumber;
-				}
-				catch (Exception e){
-					// If its not a number then proceed
-				}
-				
-				if (fileCopyNumber == 1){
-					nameLeft += "_" + fileCopyNumber;
-				}
-				else{
-					nameLeft = nameLeft.split("_")[0] + "_" + fileCopyNumber;
-				}
-				
-				String nameRight = fileName.split("\\.")[1];
-				
-				outputFile = nameLeft + "." + nameRight;
-			}
-			else {
-				foundIncompleteFile = true;
-			}
-		}
-		
-		// Appends the byte segment to the file byte array
-		for (int i = fileEvent.getSegmentStartIndex(), j = 0; i < fileEvent.getSegmentEndIndex(); i++, j++) {
-			incomingFile[i] = fileEvent.getFileSegmentData()[j];		
-		}
-		
 		try {
+			String directory  = "./udpUploads/";
+			String outputFile = new File(directory + fileEvent.getFilename()).getCanonicalPath();
+			if (!new File(directory).exists()) {
+				new File(directory).mkdirs();
+			}
+			
+			boolean foundIncompleteFile = false;
+			while (new File(outputFile).exists() && !foundIncompleteFile) {
+				int fileCopyNumber = 1;
+				//If the file is already complete then add next sequential to name
+				if (new File(outputFile).length() == fileEvent.getTotalFileSize()){
+					String fileName = outputFile;
+					String nameLeft = fileName.split("\\.")[0];
+					try {
+						int previousNumber = Integer.parseInt(nameLeft.substring(nameLeft.length()-1));
+						fileCopyNumber += previousNumber;
+					}
+					catch (Exception e){
+						// If its not a number then proceed
+					}
+					
+					if (fileCopyNumber == 1){
+						nameLeft += "_" + fileCopyNumber;
+					}
+					else{
+						nameLeft = nameLeft.split("_")[0] + "_" + fileCopyNumber;
+					}
+					
+					String nameRight = fileName.split("\\.")[1];
+					
+					outputFile = nameLeft + "." + nameRight;
+				}
+				else {
+					foundIncompleteFile = true;
+				}
+			}
+			
+			// Appends the byte segment to the file byte array
+			for (int i = fileEvent.getSegmentStartIndex(), j = 0; i < fileEvent.getSegmentEndIndex(); i++, j++) {
+				incomingFile[i] = fileEvent.getFileSegmentData()[j];		
+			}
 			
 			// If all the segments are received then save the file
 			if (fileEvent.getFileSegmentNumber() == fileEvent.getTotalFileSegments()){
