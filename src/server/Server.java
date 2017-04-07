@@ -42,7 +42,7 @@ public class Server {
 	public void createAndListenSocket() {
 		try {
 			socket = new DatagramSocket(port);
-			byte[] incomingData = new byte[(int) (bufferSize+527) ]; // 527 Additional buffer for the header of the message
+			byte[] incomingData = new byte[(int) (bufferSize+550) ]; // 550 Additional buffer for the header of the message
 			System.out.println("Server started and listening at port: " + port);
 			System.out.println("Buffer Size: "+ incomingData.length);
 			while (true) {
