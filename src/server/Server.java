@@ -11,7 +11,11 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
+import java.util.TimeZone;
 
 import fileEvent.FileEvent;
 
@@ -26,6 +30,10 @@ public class Server {
 	private byte[] incomingFile;
 	private int numberOfPacketsExpected;
 	private int numberOfPacketsReceived;
+	
+	long startTime = 0;
+	
+	private String directory  = "./udpUploads/";
 	
 	public Server(int pPort, int pBufferSize) {
 		
@@ -48,6 +56,9 @@ public class Server {
 			while (true) {
 				DatagramPacket incomingPacket = new DatagramPacket(incomingData, incomingData.length);
 				socket.receive(incomingPacket);
+				if (startTime == 0) {
+					startTime = System.currentTimeMillis();
+				}
 				
 				byte[] data = incomingPacket.getData();
 				ByteArrayInputStream in = new ByteArrayInputStream(data);
@@ -85,7 +96,6 @@ public class Server {
 
 	public void createAndWriteFile() {
 		try {
-			String directory  = "./udpUploads/";
 			String outputFile = new File(directory + fileEvent.getFilename()).getCanonicalPath();
 			if (!new File(directory).exists()) {
 				new File(directory).mkdirs();
@@ -145,7 +155,12 @@ public class Server {
 				
 				byte[] serverFileHash = md.digest();
 				
-				System.out.println("SERVER: Received Last Segment, # of Packets Missing: " + (numberOfPacketsExpected - numberOfPacketsReceived));
+				Date elapsedTime = new Date((System.currentTimeMillis() - startTime));
+				DateFormat formatter = new SimpleDateFormat("HH:mm:ss:SSSS");
+				formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
+				String dateFormatted = formatter.format(elapsedTime);
+				
+				System.out.println("SERVER: Received Last Segment, # of Packets Missing: " + (numberOfPacketsExpected - numberOfPacketsReceived) + " Elapsed Time: " + dateFormatted + " - Hours:Minutes:Seconds:Miliseconds");
 				System.out.println("Hash Client: " + Arrays.toString(originFileHash));
 				System.out.println("Hash Server: " + Arrays.toString(serverFileHash));
 				
